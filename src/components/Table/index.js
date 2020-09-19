@@ -1,5 +1,6 @@
 import React from "react";
 import API from "../../API";
+import SortBar from "../SortBar";
 
 class Table extends React.Component {
   state = {
@@ -9,10 +10,19 @@ class Table extends React.Component {
   render(props) {
     return <div>
       <h1>Hello Table</h1>
-      {API.getUsers().map(user => {
-        return (<p>{user.name} : {user.role} : {user.email}</p>)
+      <SortBar sortedBy={this.state.sortedBy} handleClick={this.handleClick} />
+      {this.getSortedUsers().map(user => {
+        return (<p key={user.id}>{user.name} : {user.role} : {user.email}</p>)
       })}
     </div>
+  }
+  
+  handleClick = event => {
+    event.preventDefault();
+    this.setState({sortedBy: event.target.id});
+  }
+  getSortedUsers = () => {
+    return API.getUsers();
   }
 }
 

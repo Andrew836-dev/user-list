@@ -7,36 +7,42 @@ const API = {
         id: 0,
         name: "Andrew",
         role: "Healer",
-        email: "hello@world.com"
+        email: "jella@world.com"
       },
       {
         id: 1,
         name: "Kelly",
         role: "Tank",
-        email: "Kelly@world.com"
+        email: "jell@world.com"
       },
       {
         id: 2,
         name: "Julia",
         role: "Accountant",
-        email: "Julia@world.com"
+        email: "jElly@aorld.com"
       }
     ]
   },
   getUsersSortedBy: async (field = "id") => {
     return API.getUsers().then(list => {
-        let sorted;
-        do {
-          sorted = true;
-          for (let i = 0; i < list.length - 1; i++) {
-            if (list[i][field] > list[i + 1][field]) {
-              sorted = false;
-              [list[i], list[i + 1]] = [list[i + 1], list[i]]
-            }
-          }
-        } while (!sorted);
-        return list;
-      });
+      return API.sortArray(list, field)
+    });
+  },
+  sortArray: async (array, field) => {
+    return array.sort((a, b) => {
+      if (typeof a[field] === "string") {
+        let length = (a[field].length > b[field.length] ? a[field].length : b[field].length)
+        for (let i = 0; i < length; i++) {
+          const compareChar = a[field].toLowerCase().charCodeAt(i) - b[field].toLowerCase().charCodeAt(i);
+          if (compareChar !== 0) return compareChar;
+        }
+        return 0;
+      } else if (typeof a[field] === "number") {
+        return a[field] - b[field];
+      } else {
+        return 0;
+      }
+    });
   }
 }
 

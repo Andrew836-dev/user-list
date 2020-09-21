@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+// import './App.css';
 import TableContainer from './components/TableContainer';
 import "bootstrap/dist/css/bootstrap.min.css";
 

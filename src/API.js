@@ -23,13 +23,13 @@ const API = {
       }
     ]
   },
-  getUsersSortedBy: async field => {
+  getUsersSortedBy: async (field = "id") => {
     return API.getUsers().then(list => {
         let sorted;
         do {
           sorted = true;
-          for (let i = 0; i < list.length; i++) {
-            if (list[i + 1] && list[i][field] > list[i + 1][field]) {
+          for (let i = 0; i < list.length - 1; i++) {
+            if (list[i][field] > list[i + 1][field]) {
               sorted = false;
               [list[i], list[i + 1]] = [list[i + 1], list[i]]
             }

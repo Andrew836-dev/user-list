@@ -1,10 +1,15 @@
 import React from "react";
 import SortTabs from "../SortTabs";
 
+const fieldList = [
+  "ID",
+  "Name",
+  "Role",
+  "Email",
+]
 function SortBar(props) {
   return <div className="btn-group">
-    <SortTabs tabName="Name" sortedBy={props.sortedBy} handleClick={props.handleClick} />
-    <SortTabs tabName="Role" sortedBy={props.sortedBy} handleClick={props.handleClick} />
+    {fieldList.map(fieldName => <SortTabs name={fieldName} sortedBy={props.sortedBy} handleClick={props.handleClick} key={fieldName} />)}
   </div>
 }
 

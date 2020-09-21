@@ -1,11 +1,11 @@
 import React from "react";
 
 function SortTabs(props) {
-  return <button onClick={props.handleClick} id={props.tabName} className={
-    props.sortedBy === props.tabName ?
+  return <button onClick={props.handleClick} id={props.name} className={
+    props.sortedBy === props.name ?
     "btn btn-primary" :
     "btn btn-outline-primary"}>
-      {props.tabName}
+      {props.name}
     </button>
 }
 

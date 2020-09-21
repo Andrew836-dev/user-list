@@ -5,46 +5,49 @@ import Table from "../Table";
 
 class TableContainer extends React.Component {
   state = {
-    sortedBy: "Name",
+    sortedBy: "ID",
     sortAscending: true,
-    list: [{ id: 0, name: "table", role: "information", email: "testEmail" }]
+    completeList: [],
+    filteredList: []
   }
 
   componentDidMount = () => {
-    this.updateUserList();
+    this.updateUserList("ID");
   }
 
   render() {
     return <div>
       <h1>Hello Table</h1>
-      <SortBar sortedBy={this.state.sortedBy} sortAscending={this.state.sortAscending} handleClick={this.handleClick} />
-      <Table data={this.state.list} />
+      <SortBar sortedBy={this.state.sortedBy} sortAscending={this.state.sortAscending} handleClick={this.sortClick} />
+      <Table data={this.state.completeList} />
     </div>
   }
 
-  handleClick = event => {
+  sortClick = event => {
     event.preventDefault();
     if (this.state.sortedBy !== event.target.id) {
-      this.setState({ sortedBy: event.target.id });
-      console.log("changed sort type");
+      this.updateUserList(event.target.id);
     }
     else {
-      this.setState({sortAscending: !this.state.sortAscending})
-      console.log("changed sort order");
+      this.updateUserList(event.target.id, !this.state.sortAscending);
     }
-    this.updateUserList();
   }
 
-  updateUserList = async () => {
-    this.getSortedUserList().then(list => {
-      this.setState({ list: list })
+  updateUserList = async (field, sortAscending = true) => {
+    this.getSortedUserList(field, sortAscending).then(list => {
+      this.setState({ 
+        sortedBy: field,
+        sortAscending: sortAscending,
+        completeList: list, 
+        // filteredList: list.filter() 
+      })
     });
   }
 
-  getSortedUserList = async () => {
-    return API.getUsersSortedBy(this.state.sortedBy.toLowerCase())
+  getSortedUserList = async (field, sortAscending) => {
+    return API.getUsersSortedBy(field.toLowerCase())
       .then(list => {
-        if (!this.state.sortAscending) {
+        if (!sortAscending) {
           list.reverse();
         }
         return list;

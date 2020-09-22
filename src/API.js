@@ -5,19 +5,22 @@ const API = {
     return [
       {
         id: 0,
-        name: "Andrew",
+        firstName: "Andrew",
+        lastName: "Pumpkin",
         role: "Healer",
         email: "jella@world.com"
       },
       {
         id: 1,
-        name: "Kelly",
+        firstName: "Kelly",
+        lastName: "Eater",
         role: "Tank",
         email: "jell@world.com"
       },
       {
         id: 2,
-        name: "Julia",
+        firstName: "Julia",
+        lastName: "Peters",
         role: "Accountant",
         email: "jElly@aorld.com"
       }
@@ -28,22 +31,6 @@ const API = {
       return API.sortArray(list, field)
     });
   },
-  sortArray: async (array, field) => {
-    return array.sort((a, b) => {
-      if (typeof a[field] === "string") {
-        let length = (a[field].length > b[field.length] ? a[field].length : b[field].length)
-        for (let i = 0; i < length; i++) {
-          const compareChar = a[field].toLowerCase().charCodeAt(i) - b[field].toLowerCase().charCodeAt(i);
-          if (compareChar !== 0) return compareChar;
-        }
-        return 0;
-      } else if (typeof a[field] === "number") {
-        return a[field] - b[field];
-      } else {
-        return 0;
-      }
-    });
-  }
 }
 
 export default API;

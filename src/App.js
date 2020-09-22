@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import './App.css';
 import TableContainer from './components/TableContainer';
+import SearchBar from "./components/SearchBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import API from "./API";
 import { paginate, sortArray } from "./utils";
@@ -9,7 +10,7 @@ const headers = [
   "id",
   "firstName",
   "lastName",
-  "role",
+  "phone",
   "email",
 ]
 
@@ -17,6 +18,7 @@ class App extends Component {
   state = {
     sortedBy: "id",
     sortAscending: true,
+    filter: "",
     completeList: [],
     displayList: [],
     perPage: 10,
@@ -25,10 +27,13 @@ class App extends Component {
 
   componentDidMount = () => {
     API.getUsers().then(list => {
-      this.setState({
-        completeList: list,
-        displayList: list.slice()
-      });
+      console.log(list);
+      if (list) {
+        this.setState({
+          completeList: list,
+          displayList: list.slice()
+        });
+      }
     });
   }
 
@@ -36,7 +41,7 @@ class App extends Component {
     const { currentPage, perPage, displayList, sortedBy, sortAscending } = this.state;
     return (<>
       <div className="container">
-      <header><nav className="nav"><h1>Header</h1></nav></header>
+        <header><nav className="nav"><h1>Header</h1></nav><SearchBar onChange={this.handleFilter} /></header>
         <TableContainer
           displayData={paginate(displayList, currentPage, perPage)}
           sortedBy={sortedBy}
@@ -44,12 +49,16 @@ class App extends Component {
           headers={headers}
           sortClick={this.handleSortingClick} />
       </div>
-      </>
+    </>
     );
   }
 
   handleFilter = event => {
-    
+    this.filterUserList(event.target.value)
+      .then(filteredList => {
+        if (!this.state.sortAscending) filteredList.reverse();
+        this.updateUserList(filteredList, this.state.sortedBy, this.state.sortAscending);
+      });
   }
 
   handleSortingClick = event => {
@@ -57,24 +66,34 @@ class App extends Component {
     const newSortedBy = event.target.id;
     if (sortedBy !== newSortedBy) {
       this.sortUserList(newSortedBy, true)
-      .then(sortedList => {
-        this.updateUserList(sortedList, newSortedBy, true)
-      });
+        .then(sortedList => {
+          this.updateUserList(sortedList, newSortedBy, true)
+        });
     }
     else {
       this.sortUserList(sortedBy, !sortAscending)
-      .then(sortedList => {
-        this.updateUserList(sortedList, sortedBy, !this.state.sortAscending);
-      });
+        .then(sortedList => {
+          this.updateUserList(sortedList, sortedBy, !sortAscending);
+        });
     }
   }
 
   updateUserList = (newList, field = "id", sortAscending = true) => {
-      this.setState({
-        sortedBy: field,
-        sortAscending: sortAscending,
-        displayList: newList,
+    this.setState({
+      displayList: newList,
+      sortedBy: field,
+      sortAscending: sortAscending,
+    });
+  }
+
+  filterUserList = async (term) => {
+    const { completeList, sortedBy} = this.state
+    return sortArray(completeList, sortedBy)
+      .then(sortedList => sortedList.filter(employee => {
+      return headers.some(header => {
+        return employee[header].toString().toLowerCase().includes(term.toLowerCase())
       });
+    }));
   }
 
   sortUserList = async (field, sortAscending) => {
